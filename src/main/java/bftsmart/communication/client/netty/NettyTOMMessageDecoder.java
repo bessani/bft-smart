@@ -154,9 +154,10 @@ public class NettyTOMMessageDecoder extends ByteToMessageDecoder {
                 sm.signed = true;
             }
 
-            if (!isClient) {                
-                rl.readLock().lock();                
-                if (!sessionTable.containsKey(sm.getSender())) {
+            if (!isClient) {
+                rl.readLock().lock();
+                if (!sessionTable.containsKey(sm.getSender()) ||
+                        !sessionTable.get(sm.getSender()).getChannel().equals(context.channel())) {
                     rl.readLock().unlock();
               
                     NettyClientServerSession cs = new NettyClientServerSession(
